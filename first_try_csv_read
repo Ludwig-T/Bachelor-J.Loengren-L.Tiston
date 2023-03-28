@@ -1,0 +1,29 @@
+import torch
+import csv
+import numpy as np
+
+### Import data from csv-files ---------------
+test_file = open('Test_data.csv') #reverse
+test_labels_file = open('Test_labels.csv')
+csvreader1 = csv.reader(test_file)
+csvreader2 = csv.reader(test_labels_file)
+
+data = [] #file is 600x12288
+for row in csvreader1:
+    data.append(row)
+
+labels = []
+for row in csvreader2:
+    labels.append(row)
+
+test_file.close()
+test_labels_file.close()
+### Preprocessing ---------------------------------
+
+
+size = (600, 12288)
+y = np.zeros(size)
+for i in range(0, len(data)):
+    y[i] = [float(j) for j in data[i]]
+
+data_T = torch.FloatTensor(y)
