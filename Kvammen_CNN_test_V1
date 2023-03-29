@@ -1,0 +1,200 @@
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+import torchvision
+import torchvision.transforms as transforms
+from torch.utils.data import TensorDataset, DataLoader
+
+
+import csv
+import matplotlib.pyplot as plt
+import numpy as np
+# ---------------------------------------------
+with torch.autocast('cuda'): #löste runtime error problem
+
+    # use GPU for computations if possible
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+    np.random.seed(42)
+
+    ### Import data from csv-files ---------------
+    test_file = open('Test_data.csv') #reverse
+    test_labels_file = open('Test_labels.csv')
+    csvreader1 = csv.reader(test_file)
+    csvreader2 = csv.reader(test_labels_file)
+
+    data = [] #file is 600x12288
+    for row in csvreader1:
+        data.append(row)
+
+    labels = []
+    for row in csvreader2:
+        labels.append(row)
+
+    test_file.close()
+    test_labels_file.close()
+
+
+    ### make into numpy arrays with numbers ---------------------------------
+
+    size_x = (600, 12288)
+    x = np.zeros(size_x)
+    size_y = (600,1)
+    y = np.zeros(size_y)
+
+    for i in range(0, len(data)):
+        x[i] = [float(j) for j in data[i]]
+
+    y = [int(item[0]) for item in labels]
+    y = np.array(y)
+
+    ### split data ------------------------------  
+
+    numberOfValPoints = 100
+
+    test_index = np.random.choice(x.shape[0], size=numberOfValPoints, replace=False)
+
+    # Extract the selected rows from the input arrays and create new arrays
+    test_data = x[test_index]
+    test_labels = y[test_index]
+
+    # Remove the selected rows from the input arrays
+    X = np.delete(x, test_index, axis=0)
+    Y = np.delete(y, test_index, axis=0)
+
+
+    ### convert into tensors ------------------------
+
+    T_test_data = torch.from_numpy(test_data).float()
+    T_test_labels = torch.from_numpy(test_labels).float()
+    T_X = torch.from_numpy(X).float()
+    T_Y = torch.from_numpy(Y).float()
+
+    #create testste
+    testset = TensorDataset(T_test_data, T_test_labels)
+    trainset = TensorDataset(T_X, T_Y)
+
+
+    #mer eller mindra kod från labben
+
+    class Net(nn.Module):
+        def __init__(self):
+            U0 = 12288  #'input size'
+            U1 = 200 
+            U2 = 100
+            U3 = 60
+            U4 = 30
+            super(Net, self).__init__()
+            self.W1 = nn.Parameter(0.1*torch.randn(U0, U1))
+            self.b1 = nn.Parameter(torch.ones(U1)/10)
+
+            self.W2 = nn.Parameter(0.1*torch.randn(U1, U2))
+            self.b2 = nn.Parameter(torch.ones(U2)/10)
+
+            self.W3 = nn.Parameter(0.1*torch.randn(U2, U3))
+            self.b3 = nn.Parameter(torch.ones(U3)/10)        
+
+            self.W4 = nn.Parameter(0.1*torch.randn(U3, U4))
+            self.b4 = nn.Parameter(torch.ones(U4)/10)
+
+            self.W5 = nn.Parameter(0.1*torch.randn(U4, 2))
+            self.b5 = nn.Parameter(torch.ones(2)/10)
+
+                
+        def forward(self, X):
+            #First layer
+            Q1 = F.relu(X.mm(self.W1) + self.b1)
+            #Second layer
+            Q2 = F.relu(Q1.mm(self.W2) + self.b2)
+            #Third layer
+            Q3 = F.relu(Q2.mm(self.W3) + self.b3)
+
+            Q4 = F.relu(Q3.mm(self.W4) + self.b4)
+
+            Z = Q4.mm(self.W5) + self.b5
+            return Z
+        
+
+    def crossentropy(G, Y):
+        # convert labels to onehot encoding
+        Y_onehot = torch.eye(10)[Y]
+
+        return -(Y_onehot * G.log()).sum(dim = 1).mean()
+
+    def accuracy(G, Y):
+        return (G.argmax(dim=1) == Y).float().mean()
+
+
+
+    # initialize the test and training error statistics
+    test_accuracy = []
+    test_crossentropy = []
+    test_iter = []
+    train_accuracy = []
+    train_crossentropy = []
+    train_iter = []
+
+    # initialize the neural network and move it to the GPU if needed
+    net = Net()
+    net.to(device)
+
+    # define the optimization algorithm
+    learningrate = 0.01             # 0.003 innan
+    optimizer = optim.Adam(net.parameters(), lr=learningrate)
+
+    # define the data loader for batches of the training data
+    batchsize = 10
+    trainloader = DataLoader(trainset, batch_size=batchsize, shuffle=True)
+
+    # perform multiple training steps
+    total_iterations = 1500 # total number of iterations
+    t = 0 # current iteration
+    done = False
+    while not done:
+        for (batch_X, batch_Y) in trainloader:
+            # move batch to the GPU if needed
+            batch_Y = batch_Y.type(torch.LongTensor)
+            batch_X, batch_Y = batch_X.to(device), batch_Y.to(device)
+
+            # zero the parameter gradients
+            optimizer.zero_grad()
+
+            # forward pass
+            batch_G = net(batch_X)
+            loss = F.cross_entropy(batch_G, batch_Y)
+            # backpropagation
+            loss.backward()
+            # perform gradient descent step
+            optimizer.step()
+            # don't bother too much about the following lines!
+            with torch.no_grad():
+                # evaluate the performance on the training data at every 5th iteration
+                if t % 5 == 0:
+                    train_crossentropy.append(loss.item())
+                    train_accuracy.append(accuracy(batch_G, batch_Y).item())
+                    train_iter.append(t) 
+                # evaluate the performance on the test data at every 10th iteration
+                if t % 10 == 0:
+                    # move test data to the GPU if needed
+                    T_test_labels = T_test_labels.type(torch.LongTensor)
+                    X, Y = T_test_data.to(device), T_test_labels.to(device)
+
+                    # compute predictions for the test data
+                    G = net(X)
+                    test_crossentropy.append(F.cross_entropy(G, Y).item())
+                    test_accuracy.append(accuracy(G, Y).item())
+                    test_iter.append(t)
+
+                    # print the iteration number and the accuracy of the predictions
+                    print(f"Step {t:5d}: train accuracy {100 * train_accuracy[-1]:6.2f}% " \
+                        f"train cross-entropy {train_crossentropy[-1]:5.2f}  " \
+                        f"test accuracy {100 * test_accuracy[-1]:6.2f}% " \
+                        f"test cross-entropy {test_crossentropy[-1]:5.2f}")
+                
+            # stop the training after the specified number of iterations
+            t += 1
+            if t > total_iterations:
+                done = True
+                break
