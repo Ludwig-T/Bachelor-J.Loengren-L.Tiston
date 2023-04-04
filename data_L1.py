@@ -2,11 +2,14 @@ import cdflib
 import numpy as np
 import matplotlib.pyplot as plt
 
-FILE_PATH = "C:/Users/joarl/OneDrive/Dokument/Skola/Kand/Kod/L1_2020_06/09/solo_L1_rpw-lfr-surv-cwf-cdag_20200609_V10.cdf"
+
+FILE_PATH = 'C:/Users/joarl/OneDrive/Dokument/Skola/Kand/Data/L1_2020_06/11/solo_L1_rpw-lfr-surv-cwf-cdag_20200611_V10.cdf'
+
 
 c = cdflib.CDF(FILE_PATH)
 
-### Infomation lines
+
+
 #print(c.cdf_info()) #general info
 #print(c.varattsget('V')) #info about specific z-variable 
 #c.print_attrs() #to get information of attributes
