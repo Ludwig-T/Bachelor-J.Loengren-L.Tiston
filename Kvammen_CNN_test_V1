@@ -7,7 +7,6 @@ import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import TensorDataset, DataLoader
 
-
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
@@ -17,11 +16,11 @@ with torch.autocast('cuda'): #löste runtime error problem
     # use GPU for computations if possible
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    np.random.seed(42)
+    np.random.seed(10)
 
     ### Import data from csv-files ---------------
-    test_file = open('Test_data.csv') #reverse
-    test_labels_file = open('Test_labels.csv')
+    test_file = open('C:/Users/joarl/OneDrive/Dokument/Skola/Kand/Data/Test_data_kvammen/Test_data.csv')
+    test_labels_file = open('C:/Users/joarl/OneDrive/Dokument/Skola/Kand/Data/Test_data_kvammen/Test_labels.csv')
     csvreader1 = csv.reader(test_file)
     csvreader2 = csv.reader(test_labels_file)
 
