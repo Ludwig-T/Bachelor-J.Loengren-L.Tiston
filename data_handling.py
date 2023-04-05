@@ -1,9 +1,8 @@
 import cdflib
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 
-def tripple_plot(X, Y, to_show=True):
+def tripple_plot(X, Y, to_show=True, title="Electric field (V/m)"):
     '''Plots 3 graphs on common x-axis'''
     fig, axes = plt.subplots(3, 1, sharex=True, sharey=True)
     
@@ -14,16 +13,16 @@ def tripple_plot(X, Y, to_show=True):
     fig.add_subplot(111, frameon=False)
     plt.tick_params(labelcolor='none', which='both', top=False, bottom=False, left=False, right=False)
     plt.xlabel("Time (ms)")
-    plt.title("Electric field (V/m)")
+    plt.title(title)
     if to_show:
         plt.show()
     else:
         return fig, axes
 
-def get_data(filepath, want_DOWNLINK_INFO=True):
+def get_data(filepath, to_extract="WAVEFORM_DATA", want_DOWNLINK_INFO=True):
     '''Extracts waveform data, sampling rate and (if wanted) downlink info from cdf file'''
     c = cdflib.cdfread.CDF(filepath)
-    WAVEFORM = c['WAVEFORM_DATA']
+    WAVEFORM = c[to_extract]
     SAMPLING_RATE = c['SAMPLING_RATE']
     if want_DOWNLINK_INFO:
         FLAGs = [1 if flag[1] == 2 else 0 for flag in c['DOWNLINK_INFO']] #Flags for dust by onboard comp.
@@ -43,23 +42,3 @@ def gen_timeseries(WAVEFORM, SAMPLING_RATE, EPOCH):
     end_time = data_size*timestep
     times = np.arange(start_time, end_time ,timestep)
     return times, Y
-#Read Data
-"""
-FILE_PATH = "C:/Data/High Freq/"
-
-for root, dirs, files in os.walk(FILE_PATH):
-    for file in files:
-        if 'tswf' in file:
-            filepath = os.path.join(root, file)
-            c = cdflib.cdfread.CDF(filepath)
-
-            FLAGs = [1 if flag[1] == 2 else 0 for flag in c['DOWNLINK_INFO']] #Flagged dust detection
-            FLAG_INDs = [i for i in range(len(FLAGs)) if FLAGs[i] == 1]       #Indicies for flagged dust
-            WAVEFORM = c['WAVEFORM_DATA']
-            SAMPLING_RATE = c['SAMPLING_RATE']
-
-            for EPOCH in FLAG_INDs:
-                X, Y = get_data(WAVEFORM, SAMPLING_RATE, EPOCH)
-                tripple_plot(X, Y)
-"""
-#WAVEFORM_UNITS = c.varattsget('WAVEFORM_DATA')['UNITS'] #Get attribute of variable
