@@ -7,8 +7,8 @@ import pandas as pd
 
 #Read Data
 PATH = '//NAS24/solo/remote/data/L2/tds_wf_e'
-YEAR = '2020'
-MONTH = '03'                #need to be in format XX, not just X
+YEAR = '2022'
+MONTH = '01'                #need to be in format XX, not just X
 
 FILE_PATH = f"{PATH}/{YEAR}/{MONTH}"
 model_FILE_PATH = 'C:/Users/joarl/OneDrive/Dokument/Skola/Kand/Kod_Kvammen/AndreasKvammen-ML_dust_detection-9c0d0de/CDF file classification/model_run_GitHub'
