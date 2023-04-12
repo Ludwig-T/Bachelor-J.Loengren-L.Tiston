@@ -1,10 +1,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from pathlib import Path
 
-PATH = 'SOLO_orbit_HCI.txt'
+filename = 'SOLO_orbit_HCI.txt'
+path = Path(__file__).with_name(filename) 
 
 
-df = pd.read_csv(PATH, sep=' ')
+df = pd.read_csv(path, sep=' ')
 # combine the year, month, and day columns into a single datetime column
 df['datetime'] = pd.to_datetime(df[['year', 'month', 'day']])
 
