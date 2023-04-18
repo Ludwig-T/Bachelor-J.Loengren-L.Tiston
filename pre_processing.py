@@ -3,11 +3,15 @@ import numpy as np
 #import os
 #from data_handling import get_data, gen_timeseries
 
-def process_data(times, DATA, compression=1):
+def process_data(times, DATA, SAMPLING_TIME=1, compression=1):
     '''Removes bias, filters, compresses and normalizes data'''
-    #compress time
+    #Compress time
+    if SAMPLING_TIME > 300000 and len(times) > 32000:
+    #Handles instances with dubble sampling freq. and timeseries lenght
+        compression *= 2
     processed_times = np.linspace(times[0],times[-1],round(len(times)/compression))
     processed_DATA = []
+    #Iterate over all three antennas
     for data in DATA:
         #Flatten and calculate median to remove bias
         F = 21
@@ -15,13 +19,21 @@ def process_data(times, DATA, compression=1):
         data_median = np.median(flattened_data)
         nobias_data = data - data_median
         
-        filtered_data = scisig.medfilt(nobias_data, kernel_size=7)  #Filter data
-        data_compressed = np.interp(processed_times, times, filtered_data)  #Compress data
-        #Normalize with respect to median
+        #Filter high freq. noise
+        filtered_data = scisig.medfilt(nobias_data, kernel_size=7)
+        
+        #Compress data
+        data_compressed = np.interp(processed_times, times, filtered_data)
+        
+        #Normalize with respect to maximum
         mx = max(abs(data_compressed))
         data_processed = data_compressed/mx
-        
+    
         processed_DATA.append(data_processed)
+    
+    #Reshape for model
+    processed_DATA = np.array(processed_DATA).transpose()
+    processed_DATA = np.reshape(1, 4096, 3)
 
     return processed_times, processed_DATA        
 
