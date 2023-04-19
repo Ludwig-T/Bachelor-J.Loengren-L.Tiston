@@ -7,9 +7,15 @@ def tripple_plot(X, Y, to_show=True, title="Electric field (V/m)"):
     fig, axes = plt.subplots(3, 1, sharex=True, sharey=True)
     
     # Plot data on each subplot
-    axes[0].plot(X, Y[0])
-    axes[1].plot(X, Y[1])
-    axes[2].plot(X, Y[2])
+    if isinstance(Y, np.ndarray):
+        axes[0].plot(X, Y[0, :, 0])
+        axes[1].plot(X, Y[0, :, 1])
+        axes[2].plot(X, Y[0, :, 2])
+    else:
+        axes[0].plot(X, Y[0])
+        axes[1].plot(X, Y[1])
+        axes[2].plot(X, Y[2])
+    
     fig.add_subplot(111, frameon=False)
     plt.tick_params(labelcolor='none', which='both', top=False, bottom=False, left=False, right=False)
     plt.xlabel("Time (ms)")
