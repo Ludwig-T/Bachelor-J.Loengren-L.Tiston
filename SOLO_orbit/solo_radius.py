@@ -16,6 +16,3 @@ def get_radius(date_str):
     daily_mean = df.groupby('datetime')['R[AU]'].mean()
 
     return daily_mean[date_str]
-
-y = '2020-05-05'
-print(get_radius(y))
