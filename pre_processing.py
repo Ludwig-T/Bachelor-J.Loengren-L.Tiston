@@ -1,21 +1,28 @@
 import scipy.signal as scisig
 import numpy as np
-#import os
-from data_handling import tripple_plot
 import matplotlib.pyplot as plt
+from data_extension import extend_data
 
-def process_data(times, DATA, SAMPLING_RATE=1, compression=1, to_plot=False):
-    '''Removes bias, filters, compresses and normalizes data'''
+def process_data(times, DATA, SAMPLING_RATE=1, compression=4, to_plot=False, to_print=True):
+    '''Removes bias, filters, compresses and normalizes data. to_print gives error messages.
+    Compression = 4 for correct model input. to_plot plots processing steps.'''
     #Compress time
     if SAMPLING_RATE < 300000 and len(times) > 32000:
-        print(f'Anomalous data: Sampling Rate = {SAMPLING_RATE}, Length = {len(times)}')
-        print('Returning None')
+        if to_print:
+            print(f'Anomalous data: Long timeseries ({len(times)} points)')
+            print('Returning None')
         return None, None
     #Handles instances with dubble sampling freq. and timeseries lenght
     elif SAMPLING_RATE > 300000 and len(times) > 32000:
-        print(f'Anomalous data: Sampling Rate = {SAMPLING_RATE}, Length = {len(times)}')
-        print('Increasing compression')
+        if to_print:
+            print(f'Anomalous data: Long timeseries ({len(times)} points) and high sampling rate ({SAMPLING_RATE} Hz)')
+            print('Increasing compression')
         compression *= 2
+    elif SAMPLING_RATE > 300000 and len(times) < 32000:
+        if to_print:
+            print(f'Anomalous data: High sampling rate ({SAMPLING_RATE} Hz)')
+            print('Extending data')
+            times, DATA = extend_data(times, DATA)
     
     times_processed = np.linspace(times[0],times[-1],round(len(times)/compression))
     
@@ -61,19 +68,4 @@ def process_data(times, DATA, SAMPLING_RATE=1, compression=1, to_plot=False):
     DATA_processed = np.array(DATA_processed).transpose()
     DATA_processed = np.reshape(DATA_processed, (1, 4096, 3))
 
-    return times_processed, DATA_processed        
-
-
-"""FILE_PATH = "C:/Data/High Freq/"
-for root, dirs, files in os.walk(FILE_PATH):    #iterate folders
-    for file in files:                          #iterate files in folders
-        if 'tswf' in file:                      #only use tswf-data
-            filepath = os.path.join(root, file)
-            print(filepath)
-            WAVEFORM, SAMPLING_RATE, FLAGGED_EPOCHS = get_data(filepath)
-            for EPOCH in FLAGGED_EPOCHS:
-                times, data = gen_timeseries(WAVEFORM, SAMPLING_RATE, EPOCH)
-                times_processed, DATA_processed = process_data(times, data, compression=8)"""
-       
-            
-            
+    return times_processed, DATA_processed       
