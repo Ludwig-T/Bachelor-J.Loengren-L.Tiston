@@ -18,7 +18,7 @@ def get_impact_time(times, DATA, reverse=False, thresh_above=0.05, thresh_below 
         times = np.flip(times)
 
     for data in DATA:
-        #Process deta:
+        #Process data:
         #Remove bias
         F = 21
         flattened_data = scisig.medfilt(data, kernel_size=F)
