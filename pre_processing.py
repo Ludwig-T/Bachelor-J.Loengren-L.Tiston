@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from data_extension import extend_data
 
-def process_data(times, DATA, SAMPLING_RATE=1, compression=4, to_plot=False, to_print=True):
+def process_data(times, DATA, SAMPLING_RATE=1, compression=4, to_plot=False, adaptable_noise=True, to_print=True):
     '''Removes bias, filters, compresses and normalizes data. to_print gives error messages.
     Compression = 4 for correct model input. to_plot plots processing steps.'''
     #Compress time
@@ -22,7 +22,7 @@ def process_data(times, DATA, SAMPLING_RATE=1, compression=4, to_plot=False, to_
         if to_print:
             print(f'Anomalous data: High sampling rate ({SAMPLING_RATE} Hz)')
             print('Extending data')
-            times, DATA = extend_data(times, DATA)
+            times, DATA = extend_data(times, DATA, adaptable_noise)
     
     times_processed = np.linspace(times[0],times[-1],round(len(times)/compression))
     
