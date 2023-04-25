@@ -62,7 +62,7 @@ def get_wavelenght(times, DATA, \
     
     max_indices = [np.argmax(np.abs(subarray)) for subarray in DATA]
     t_lim10 = times[len(times)//10]
-    good_est = 1
+    good_est = [1, 1, 1]
     
     done = False
     while not done:  
@@ -80,7 +80,7 @@ def get_wavelenght(times, DATA, \
 
                 #Couldn't find good wavelenght
                 if thresh_above[i] > 1:
-                    good_est = 0
+                    good_est[i] = 0
                     done = True
                     break
             else:
@@ -90,14 +90,14 @@ def get_wavelenght(times, DATA, \
         if checks == 3:
             break
     
-    for t in time_end_per_antenna:
+    for i, t in enumerate(time_end_per_antenna):
         #Wavelenghts shouldn't differ that much.
         if t - np.mean(time_start_per_antenna) > 10:
-            good_est = 0
+            good_est[i] = 0
 
     if to_plot:
         if title == 'Quality':
-            title = good_est
+            title = str(good_est)
         fig, axes = tripple_plot(times, DATA, to_show=False, title=title)
         for i, ax in enumerate(axes):
             ax.axvline(time_start_per_antenna[i], linestyle='--', color='g')
