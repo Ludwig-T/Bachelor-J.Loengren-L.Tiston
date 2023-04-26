@@ -22,7 +22,7 @@ def process_data(times, DATA, SAMPLING_RATE=1, compression=4, to_plot=False, ada
         if to_print:
             print(f'Anomalous data: High sampling rate ({SAMPLING_RATE} Hz)')
             print('Extending data')
-            times, DATA = extend_data(times, DATA, adaptable_noise)
+        times, DATA = extend_data(times, DATA, adaptable_noise)
     
     times_processed = np.linspace(times[0],times[-1],round(len(times)/compression))
     
