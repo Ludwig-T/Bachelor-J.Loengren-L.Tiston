@@ -6,8 +6,8 @@ from pre_processing import process_data
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
 #Read Data
-FILE_PATH = "C:/Data/anomaly/"
-model_FILE_PATH = "C:\Data\model\model_run_GitHub"
+FILE_PATH = "C:/Users/joarl/OneDrive/Skrivbord/anomoly/"
+model_FILE_PATH = 'C:/Users/joarl/OneDrive/Dokument/Skola/Kand/Kod_Kvammen/AndreasKvammen-ML_dust_detection-9c0d0de/CDF file classification/model_run_GitHub'
 model = tf.keras.models.load_model(model_FILE_PATH)
 
 file_to_plot = 1

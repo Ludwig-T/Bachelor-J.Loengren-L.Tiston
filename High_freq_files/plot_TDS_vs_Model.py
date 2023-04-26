@@ -75,7 +75,7 @@ plt.bar(br3, data[2], color ='b', width = barWidth,
  
 # Adding Xticks
 plt.xlabel('Month', fontweight ='bold', fontsize = 12)
-plt.ylabel('Occurrence', fontweight ='bold', fontsize = 12)
+plt.ylabel('Registered impacts per month', fontweight ='bold', fontsize = 12)
 plt.xticks([r + barWidth for r in range(len(data[0]))],
         months, rotation='vertical')
 plt.title('Number of agreence in the models', fontweight ='bold', fontsize = 15)
