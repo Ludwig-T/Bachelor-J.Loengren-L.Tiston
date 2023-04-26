@@ -2,18 +2,17 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-#df = pd.read_csv('Labels.csv')
-df = pd.read_pickle('Labels.pkl')
+df = pd.read_pickle('Labels_2022.pkl')
 
 amplitudes = []
 wavelenghts = []
-index_amp = 3
 
 for day in df:
-    for epoch, wavelenght, waveQ in zip(df[day]['amplitude'], df[day]['wavelenght'], df[day]['waveQ']):
-        amplitudes.append(max(epoch))
-        if waveQ == 1:
-            wavelenghts.append(max(wavelenght))
+    for amplitude, wavelenght, waveQ in zip(df[day]['amplitude'], df[day]['wavelenght'], df[day]['waveQ']):
+        amplitudes.append(max(amplitude))
+        good_wavel = np.array(wavelenght)[np.array(waveQ, dtype=bool)]
+        if len(good_wavel) != 0:
+            wavelenghts.append(max(good_wavel))
 
 plt.hist(amplitudes)
 plt.show()
