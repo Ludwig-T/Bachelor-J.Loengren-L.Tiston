@@ -26,14 +26,26 @@ def tripple_plot(X, Y, to_show=True, title="Electric field (V/m)"):
         return fig, axes
 
 def get_data(filepath, to_extract="WAVEFORM_DATA", want_DOWNLINK_INFO=True):
-    '''Extracts waveform data, sampling rate and (if wanted) downlink info from cdf file'''
+    '''Input: filepath of cdf-file with data, what is to be extracted from file,
+     and if it should return epoch indicies, onboard flags for dust, or "Both".
+     Extracts desired data from file (e.g. waveform data), sampling rate,
+     and (if wanted) downlink info from cdf file'''
+     
+    #Read data
     c = cdflib.cdfread.CDF(filepath)
     WAVEFORM = c[to_extract]
     SAMPLING_RATE = c['SAMPLING_RATE']
-    if want_DOWNLINK_INFO:
-        FLAGs = [1 if flag[1] == 2 else 0 for flag in c['DOWNLINK_INFO']] #Flags for dust by onboard comp.
-        FLAGGED_EPOCHS = [i for i in range(len(FLAGs)) if FLAGs[i] == 1]       #Indicies for flagged dust
+    
+    if want_DOWNLINK_INFO == True:
+        FLAGs = [1 if flag[1] == 2 else 0 for flag in c['DOWNLINK_INFO']]   #Flags for dust by onboard comp.
+        FLAGGED_EPOCHS = [i for i in range(len(FLAGs)) if FLAGs[i] == 1]    #Indicies for flagged dust
         return WAVEFORM, SAMPLING_RATE, FLAGGED_EPOCHS
+    
+    elif want_DOWNLINK_INFO == 'Both':
+        FLAGs = [1 if flag[1] == 2 else 0 for flag in c['DOWNLINK_INFO']]   #Flags for dust by onboard comp.
+        EPOCHS = [i for i in range(len(SAMPLING_RATE))]
+        return WAVEFORM, SAMPLING_RATE, EPOCHS, FLAGs 
+           
     else:
         EPOCHS = [i for i in range(len(SAMPLING_RATE))]
         return WAVEFORM, SAMPLING_RATE, EPOCHS
