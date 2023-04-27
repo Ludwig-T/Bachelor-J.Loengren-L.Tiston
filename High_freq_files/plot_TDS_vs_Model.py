@@ -6,12 +6,12 @@ from pathlib import Path
 
 from data_handling import get_data
 
-folder_predictions = 'predictions'
+folder_predictions = 'Test_predictions'
 path = Path(__file__).with_name(folder_predictions) 
 
-threshold = 0.95
+threshold = 0.9
 start_month = '2020-04'
-end_month = '2023-03' #one more then the final month for some reason
+end_month = '2023-04' #one more then the final month for some reason
 
 agree_m = []
 TDS_m = []
@@ -73,11 +73,12 @@ plt.bar(br2, data[1], color ='g', width = barWidth,
 plt.bar(br3, data[2], color ='b', width = barWidth,
         edgecolor ='grey', label ='Model')
  
-# Adding Xticks
+ 
 plt.xlabel('Month', fontweight ='bold', fontsize = 12)
 plt.ylabel('Registered impacts per month', fontweight ='bold', fontsize = 12)
 plt.xticks([r + barWidth for r in range(len(data[0]))],
         months, rotation='vertical')
+
 plt.title('Number of agreence in the models', fontweight ='bold', fontsize = 15)
 plt.legend()
 plt.show()
