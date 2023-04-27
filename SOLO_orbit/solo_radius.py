@@ -1,9 +1,7 @@
 import pandas as pd
 from pathlib import Path
-
 filename = 'SOLO_orbit_HCI.txt'
 path = Path(__file__).with_name(filename) 
-
 
 def get_radius(date_str):
     """
