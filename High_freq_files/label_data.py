@@ -4,7 +4,8 @@ from data_handling import get_data, gen_timeseries
 from get_amp import get_amp
 from get_wavelenght import get_wavelenght
 
-save_as = 'Labels_2022.pkl'
+save_as = 'Labels_2020.pkl'
+
 #Folder with predictions:
 folderpath_pred = 'C:/Data/predictions'
 
@@ -45,7 +46,7 @@ for filename in os.listdir(folderpath_pred):
                     data_dict['downlink'].append(FLAGs[EPOCH])
                     data_dict['amplitude'].append(amplitude)
                     data_dict['prediction'].append(prediction)
-                    data_dict['wavelenght'].append(wavelenght)
+                    data_dict['wavelength'].append(wavelenght)
                     data_dict['waveQ'].append(waveQ)
 
             main_dic[file] = data_dict
