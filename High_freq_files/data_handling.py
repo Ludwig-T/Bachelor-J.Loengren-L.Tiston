@@ -60,3 +60,8 @@ def gen_timeseries(WAVEFORM, SAMPLING_RATE, EPOCH):
     end_time = data_size*timestep
     times = np.arange(start_time, end_time ,timestep)
     return times, Y
+
+def smooth(y, box_pts):
+    box = np.ones(box_pts)/box_pts
+    y_smooth = np.convolve(y, box, mode='same')
+    return y_smooth

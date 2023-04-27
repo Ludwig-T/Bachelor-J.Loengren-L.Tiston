@@ -6,19 +6,21 @@ from pathlib import Path
 
 from data_handling import get_data
 
-folder_predictions = 'Test_predictions'
+folder_predictions = 'predictions'
 path = Path(__file__).with_name(folder_predictions) 
 
-threshold = 0.9
+threshold = 0.9     #choosing a threshold for the model to classify as dust
 start_month = '2020-04'
 end_month = '2023-04' #one more then the final month for some reason
 
+#creating the counting lists
 agree_m = []
 TDS_m = []
 model_m = []
 
 for file in os.listdir(path): 
-
+    
+    #creating the list for each months
     agree = []
     TDS = []
     model = []
@@ -29,6 +31,8 @@ for file in os.listdir(path):
     folderpath_data = f'//NAS24/solo/remote/data/L2/tds_wf_e/{path_string[-11:-7]}/{path_string[-6:-4]}' #extracting year and month so to get to right folder
     df = pd.read_csv(file_path)
 
+
+    #going through all data for each month
     for column in df.columns:
 
         filepath = os.path.join(folderpath_data, column)
@@ -46,39 +50,38 @@ for file in os.listdir(path):
             elif prediction > threshold and EPOCH not in FLAGGED_EPOCHS:
                 model.append(prediction)
         
-    agree_m.append(len(agree))
-    TDS_m.append(len(TDS))
-    model_m.append(len(model))
+    #add to monthly count, normalize by how many days looked at in month
+    agree_m.append(len(agree)/df.shape[1])
+    TDS_m.append(len(TDS)/df.shape[1])
+    model_m.append(len(model)/df.shape[1])
 
     print(file)
 
-
+#cerates dates
 dates = pd.date_range(start=start_month, end=end_month, freq='M')
 months = [timestamp.strftime('%Y-%m') for timestamp in dates]
-data = [agree_m, TDS_m, model_m]
 
-barWidth = 0.25
-fig = plt.subplots()
- 
-# Set position of bar on X axis
-br1 = np.arange(len(data[0]))
-br2 = [x + barWidth for x in br1]
-br3 = [x + barWidth for x in br2]
- 
-# Make the plot
-plt.bar(br1, data[0], color ='r', width = barWidth,
-        edgecolor ='grey', label ='Agree')
-plt.bar(br2, data[1], color ='g', width = barWidth,
-        edgecolor ='grey', label ='TDS')
-plt.bar(br3, data[2], color ='b', width = barWidth,
-        edgecolor ='grey', label ='Model')
- 
- 
-plt.xlabel('Month', fontweight ='bold', fontsize = 12)
-plt.ylabel('Registered impacts per month', fontweight ='bold', fontsize = 12)
-plt.xticks([r + barWidth for r in range(len(data[0]))],
-        months, rotation='vertical')
+#plot the figure
+fig, ax = plt.subplots()
 
-plt.title('Number of agreence in the models', fontweight ='bold', fontsize = 15)
-plt.legend()
+barWidth_wide = 0.7
+barWidth_small = 0.35
+
+agree_bar = ax.bar(np.arange(len(agree_m)), agree_m, barWidth_wide, label ='Both classifying dust', zorder=3)
+TDS_bar = ax.bar(np.arange(len(TDS_m)) - barWidth_small/2 , TDS_m, barWidth_small, bottom=agree_m, label='Only TDS classification', zorder=3)
+model_bar = ax.bar(np.arange(len(model_m)) + barWidth_small/2 , model_m, barWidth_small, bottom=agree_m, label='Only Model classification', zorder=3)
+
+ax.set_xticks(np.arange(len(agree_m)))
+ax.set_xticklabels(months, rotation=45, fontweight ='bold', fontsize = 20)
+
+for label in ax.xaxis.get_ticklabels()[::2]:
+    label.set_visible(False)
+
+ax.set_ylabel('Mean impacts [/day]', fontsize = 20)
+ax.set_xlabel('Month', fontsize = 25)
+
+ax.legend(fontsize="20")
+ax.grid(color = "grey", zorder=0)
+
+plt.title('Agreeance and dissagreence in the models', fontsize = 30)
 plt.show()
