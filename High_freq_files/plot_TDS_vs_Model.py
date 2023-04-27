@@ -72,13 +72,13 @@ TDS_bar = ax.bar(np.arange(len(TDS_m)) - barWidth_small/2 , TDS_m, barWidth_smal
 model_bar = ax.bar(np.arange(len(model_m)) + barWidth_small/2 , model_m, barWidth_small, bottom=agree_m, label='Only Model classification', zorder=3)
 
 ax.set_xticks(np.arange(len(agree_m)))
-ax.set_xticklabels(months, rotation=45, fontweight ='bold', fontsize = 20)
+ax.set_xticklabels(months, rotation=90, fontsize = 20)
 
 for label in ax.xaxis.get_ticklabels()[::2]:
     label.set_visible(False)
 
 ax.set_ylabel('Mean impacts [/day]', fontsize = 20)
-ax.set_xlabel('Month', fontsize = 25)
+#ax.set_xlabel('Month', fontsize = 25)
 
 ax.legend(fontsize="20")
 ax.grid(color = "grey", zorder=0)

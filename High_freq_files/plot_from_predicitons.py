@@ -68,10 +68,10 @@ plt.plot(dates, TDS_smoothed, color='red', label = 'TDS smoothed')
 
 plt.vlines(x = solo_min_radius, colors = 'black', linestyle="dashed", ymin = 0, ymax = max(impact_model_count), label = 'Solar orbiter at perihelion')
 
-plt.xlabel('Dates', fontweight ='bold', fontsize = 25)
+plt.xlabel('Dates', fontsize = 25)
 plt.xticks(fontsize = 25)
 
-plt.ylabel('Impacts [/day]', fontweight ='bold', fontsize = 25)
+plt.ylabel('Impacts [/day]', fontsize = 25)
 plt.title('Predictions of dust impacts', fontsize = 30)
 
 plt.grid(color='grey', linewidth=0.2)
