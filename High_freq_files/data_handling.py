@@ -2,8 +2,13 @@ import cdflib
 import matplotlib.pyplot as plt
 import numpy as np
 
-def tripple_plot(X, Y, to_show=True, title="Electric field (V/m)"):
+def tripple_plot(X, Y, to_show=True, title="Electric field (V/m)", set_font=True):
     '''Plots 3 graphs on common x-axis'''
+    if set_font:
+        plt.rc('font', size=20)
+        plt.rc('xtick', labelsize=15)
+        plt.rc('ytick', labelsize=15)
+
     fig, axes = plt.subplots(3, 1, sharex=True, sharey=True)
     
     # Plot data on each subplot
