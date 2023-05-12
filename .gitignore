@@ -557,3 +557,8 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+Labels_2022.pkl
+High_freq_files/show_data_ext copy.py
+Low_freq_files/read_mat.py
+.vscode/settings.json
+Low_freq_files/read_mat.py
