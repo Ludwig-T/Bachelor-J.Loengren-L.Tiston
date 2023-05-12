@@ -10,6 +10,7 @@ def extend_data(times, data, adaptable_noise=True):
             sigma = np.std(antenna)     #Standard deviation of each antenna
             sigma_antennas.append(sigma)
             
+        #Create noise for each antenna
         sigmas = np.array(sigma_antennas)
         noise1 = np.random.randn(3, 8192)*sigmas.reshape(3,1)
         noise2 = np.random.randn(3, 8192)*sigmas.reshape(3,1)
@@ -28,6 +29,6 @@ def extend_data(times, data, adaptable_noise=True):
     data_noise= [new_data[::2] for new_data in data_noice_full]
     
     #extend time to fit extended data
-    times_doubbled = times*2              
+    times_doubled = times*2              
 
-    return times_doubbled, data_noise
+    return times_doubled, data_noise
