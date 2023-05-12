@@ -6,7 +6,7 @@ from pre_processing import process_data
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
 #Read Data
-FILE_PATH = "C:/Data/anomaly/"
+FILE_PATH = "C:/Data/High Freq/10"
 model_FILE_PATH = "C:\Data\model\model_run_GitHub"
 model = tf.keras.models.load_model(model_FILE_PATH)
 
@@ -29,19 +29,20 @@ for root, dirs, files in os.walk(FILE_PATH):    #iterate folders
                 times, data = gen_timeseries(WAVEFORM, SAMPLING_RATE, EPOCH)
                 
                 times_processed, DATA_processed = \
-                    process_data(times, data, SAMPLING_RATE[EPOCH], compression=4, adaptable_noise=False)
+                    process_data(times, data, SAMPLING_RATE[EPOCH], compression=4, adaptable_noise=True)
 
                 if DATA_processed is not None and file_counter == file_to_plot:
                     prediction = model.predict(DATA_processed)[0][1]
                     #flags.append(prediction)
                     if prediction > 0.95:
                         flag_counter += 1
+                        process_data(times, data, SAMPLING_RATE[EPOCH], to_plot=True)
                     times_processed2, DATA_processed2 =\
                         process_data(times, data, SAMPLING_RATE[EPOCH], compression=4, adaptable_noise=True)
-                    tripple_plot(times, data, title=f"Prediction: {prediction:.2f}")
-                    tripple_plot(times_processed, DATA_processed, title=f"Prediction: {prediction:.2f}, static noise")
+                    #tripple_plot(times, data, title=f"Prediction: {prediction:.2f}")
+                    #tripple_plot(times_processed, DATA_processed, title=f"Prediction: {prediction:.2f}, static noise")
                     prediction = model.predict(DATA_processed2)[0][1]
-                    tripple_plot(times_processed2, DATA_processed2, title=f"Prediction: {prediction:.2f}, adaptable noise")  
+                    #tripple_plot(times_processed2, DATA_processed2, title=f"Prediction: {prediction:.2f}, adaptable noise")  
             #FLAGGED_EPOCHS[file] = flags
             #file_counter += 1
                 
