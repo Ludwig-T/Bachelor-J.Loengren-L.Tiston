@@ -4,7 +4,7 @@ from data_handling import get_data, gen_timeseries
 from get_amp import get_amp
 from get_wavelenght import get_wavelenght
 
-save_as = 'Labels_2020.pkl'
+save_as = 'Labels_2020_v2.pkl'
 
 #Folder with predictions:
 folderpath_pred = 'C:/Data/predictions'
@@ -30,23 +30,25 @@ for filename in os.listdir(folderpath_pred):
             "downlink": [],     #Onboard computer flag for dust
             "prediction": [],   #Neural net prediction for dust
             "amplitude": [],    #Amplitude of signals
-            "wavelenght": [],   #Wavelenght of signals
+            "ampInfo": [],      #Amplitude min and max
+            "wavelength": [],   #Wavelength of signals
             "waveQ": []         #Quality of wavelenght essitmations
             }
             
             for EPOCH, prediction in enumerate(df[file]):
                 if prediction > threshold:
                     X, Y = gen_timeseries(WAVEFORM, SAMPLING_RATE, EPOCH)
-                    amplitude = get_amp(X, Y, to_plot=False)
-                    amplitude = [abs(Mx - mn) for mn, Mx in amplitude]
-                    wavelenght, waveQ = get_wavelenght(X, Y, to_plot=False,\
+                    ampInfo = get_amp(X, Y, to_plot=True)
+                    amplitude = [abs(mn - Mx) for mn, Mx, _, _, _ in ampInfo]
+                    wavelength, waveQ = get_wavelenght(X, Y, to_plot=False,\
                         thresh_below=[0.01, 0.01, 0.01], thresh_above=[0.02, 0.02, 0.02])
                     
                     data_dict['epoch'].append(EPOCH)
                     data_dict['downlink'].append(FLAGs[EPOCH])
                     data_dict['amplitude'].append(amplitude)
+                    data_dict['ampInfo'].append(ampInfo)
                     data_dict['prediction'].append(prediction)
-                    data_dict['wavelength'].append(wavelenght)
+                    data_dict['wavelength'].append(wavelength)
                     data_dict['waveQ'].append(waveQ)
 
             main_dic[file] = data_dict
