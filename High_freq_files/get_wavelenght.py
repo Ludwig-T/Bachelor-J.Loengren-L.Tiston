@@ -72,9 +72,14 @@ def get_wavelenght(times, DATA, \
 
         checks = 0
         for i, (t_start, t_end) in enumerate(zip(time_start_per_antenna, time_end_per_antenna)):
+            #Noise dominating at small data, unreliable wavelength
+            if np.max(DATA[i]) - np.min(DATA[i]) < 0.002:
+                good_est[i] = 0
+                continue
+            
             time_max = times[max_indices[i]]
             #If t_start is too far from the max peak or the wavelenght is too long, it is probably detecting noise.
-            if abs(time_max - t_start) > t_lim10/2 or abs(t_end - t_start > 10):
+            if abs(time_max - t_start) > t_lim10/2 or 0 > t_end - t_start or t_end - t_start > 12:
                 #Increase parameter
                 thresh_above[i] *= 1.8
 
@@ -83,16 +88,22 @@ def get_wavelenght(times, DATA, \
                     good_est[i] = 0
                     done = True
                     break
+
             else:
                 checks += 1
 
         #All three antennas should be good.
-        if checks == 3:
+        if checks == sum(good_est):
             break
     
-    for i, t in enumerate(time_end_per_antenna):
-        #Wavelenghts shouldn't differ that much.
-        if t - np.mean(time_start_per_antenna) > 10:
+    for i, (t_s, t_e) in enumerate(zip(time_start_per_antenna, time_end_per_antenna)):
+        counter = 0 
+        for T_s, T_e in zip(time_start_per_antenna, time_end_per_antenna):
+        #Start of wavelengths shouldn't differ to much.
+            if abs(T_s-t_s) > 2 and abs(T_e-T_s - t_e-t_s) > 5:
+                counter += 1
+            
+        if counter == 2:
             good_est[i] = 0
 
     if to_plot:
