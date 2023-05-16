@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-FILE_PATH = 'C:/Users/joarl/OneDrive/Dokument/Skola/Kand/Data/L1_2020_06/11/solo_L1_rpw-lfr-surv-cwf-cdag_20200611_V10.cdf'
+FILE_PATH = '//NAS24/solo/remote/data/L1/2020/02/12/solo_L1_rpw-lfr-surv-cwf-cdag_20200212_V10.cdf'
 
 
 c = cdflib.CDF(FILE_PATH)
@@ -11,7 +11,7 @@ c = cdflib.CDF(FILE_PATH)
 
 
 #print(c.cdf_info()) #general info
-#print(c.varattsget('V')) #info about specific z-variable 
+print(c.varattsget('EPOCH')) #info about specific z-variable 
 #c.print_attrs() #to get information of attributes
 
 ### Electrical field plot
