@@ -86,13 +86,13 @@ def plot_amp_time(data):
     data_filtered = smooth(daily_data, 41)
     fig, ax1 = plt.subplots()
     ax2 = ax1.twinx()
-    ax1.plot(dates, daily_data, '.', label='Daily average max', color='blue', alpha=0.3)
+    ax1.plot(dates, daily_data, '.', label='Daily average', color='blue', alpha=0.3)
     ax1.plot(dates[20:-20], data_filtered[20:-20], label='Rolling mean n=41', color='blue')
     ax1.set_ylabel('Amplitude [V]')
     ax2.plot(solo_dates, solo_radi, label='Distance from sun', linestyle='--', color='black', alpha=0.9)
     ax2.set_ylabel('Distance [A.U.]')
     ax2.set_ylim(0, 1.5)
-    fig.suptitle('Average max amplitude per day')
+    fig.suptitle('Average amplitude per day')
     fig.legend(framealpha=1)
     plt.grid(alpha=0.2)
     plt.show()
@@ -121,9 +121,9 @@ def plot_amp_space(data):
     plt.plot(solo_radi, daily_data, '.', alpha=0.8)
     #plt.axline((0, m), slope=k, color='orange')
     plt.xlim((0.28, 1.05))
-    plt.xlabel('Distance from sun (A.U.)')
-    plt.ylabel('Amplitude (V)')
-    plt.title('Average max amplitude per day')
+    plt.xlabel('Distance from sun [A.U.]')
+    plt.ylabel('Amplitude [V]')
+    plt.title('Average amplitude per day')
     plt.grid(True, alpha=0.2)
     plt.show()
     
@@ -157,10 +157,10 @@ def plot_wave_time(data):
     ax1.plot(dates[25:-25], data_filtered[25:-25], label='Rolling mean n=41', color='blue')
     ax1.set_ylabel('Wavelength [ms]')
     ax1.set_ylim(0, 16)
-    ax2.plot(solo_dates, solo_radi, label='Distance from sun', color='black', alpha=0.9)
+    ax2.plot(solo_dates, solo_radi, '--', label='Distance from sun', color='black', alpha=0.9)
     ax2.set_ylabel('Distance [A.U.]')
     ax2.set_ylim(0, 1.1)
-    fig.suptitle('Average max wavelength per day')
+    fig.suptitle('Average wavelength per day')
     fig.legend(fontsize=22, framealpha=0.95)
     plt.grid(alpha=0.2)
     plt.show()
@@ -511,7 +511,8 @@ plt.rc('ytick', labelsize=25)
 # Set the font family to the LaTeX font family
 mpl.rcParams['font.family'] = 'serif'
 mpl.rcParams['font.serif'] = ['Times New Roman'] + mpl.rcParams['font.serif']
-mpl.rcParams['figure.constrained_layout.use'] = True       
+mpl.rcParams['figure.constrained_layout.use'] = True
+       
 #Load spicepy kernels
 spiceypy.furnsh('C:/Data/solo_master/kernels/lsk/naif0012.tls')
 directory = "C:/Data/solo_master/kernels/spk"
@@ -527,4 +528,4 @@ data = [pd.read_pickle(year) for year in files]
 packetCount = pd.read_pickle('packetCounts')
 #Plots
 fig_path = 'C:/Users/ludwi/OneDrive - Uppsala universitet/1. Projekt/Kandidat/figures/'
-plot_dust_radV(data)
+plot_wave_time(data)

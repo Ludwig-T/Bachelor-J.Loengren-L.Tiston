@@ -83,13 +83,11 @@ def extracting_mat(PATH_MAT_FILE):
     return t, data, return_list
 
 
-def sliding_data(data, window_size = window):
+def sliding_data(data, overlap, window_size = window):
     
-    # Define the overlap
-    overlap = 0.5 #50%
 
     # Calculate the stride
-    stride = int(window_size * overlap)
+    stride = int(window_size * (1 - overlap) )
 
     start_indices = list(range(0, len(data) - window_size + 1, stride))
 
@@ -101,7 +99,7 @@ def sliding_data(data, window_size = window):
 def creating_indices(time, data, timestamps, window_size = window):
     
     # Define the overlap
-    overlap = 0.5 #50%
+    overlap = 0.25 #50% used for training
 
     # Calculate the stride
     stride = int(window_size * overlap)
