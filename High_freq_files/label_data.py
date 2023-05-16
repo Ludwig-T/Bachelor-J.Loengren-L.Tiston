@@ -32,7 +32,7 @@ for filename in os.listdir(folderpath_pred):
             "amplitude": [],    #Amplitude of signals
             "ampInfo": [],      #Amplitude min and max
             "wavelength": [],   #Wavelength of signals
-            "waveQ": []         #Quality of wavelenght essitmations
+            "waveQ": []         #Quality of wavelength essitmations
             }
             
             for EPOCH, prediction in enumerate(df[file]):

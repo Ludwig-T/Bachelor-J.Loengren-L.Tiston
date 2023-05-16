@@ -432,6 +432,7 @@ def polarity_pDay(data):
 def plot_dust_radV(data):
     daily_data = []
     solo_vel_list = []
+    solo_R = []
     for year in data:
         for day in year:
             
@@ -458,34 +459,51 @@ def plot_dust_radV(data):
             #Dot product
             vrad = vx*ux + vy*uy + vz*uz
             solo_vel_list.append(vrad)
+            solo_R.append(R)
     x = []
     y = []
-    for tresh_v in np.linspace(0, 20, 100):
+    names = []
+    intervals = np.linspace(0, 20, 11)
+    for i in range(len(intervals)-1):
         impacts = [0, 0]
+        start = intervals[i]
+        end = intervals[i+1]
+        names.append(f'{start:.0f} to {end:.0f}')
         for v, rate in zip(solo_vel_list, daily_data):
-            if v > tresh_v:
+            if start <= v < end:
                 impacts[0] += rate
-            elif v < -tresh_v:
+            elif start <= -v < end:
                 impacts[1] += rate
         if sum(impacts) > 0:
-            x.append(tresh_v)
             y.append(impacts[0]/sum(impacts))
-        
-    plt.plot(x,y)
+    
+    v_dust = [1/(2*Y-1)*X for X, Y in zip(x, y)]
+    
+    plt.bar(names, y)
+    plt.plot(x,v_dust)
     plt.title('Ratio of dust detections going towards sun')
     plt.xlabel('Threshold radial velocity of Solar Orbiter [km/s]')
     plt.ylabel('Ratio of dust detections towards sun')
-    plt.ylim((0.5, 1))
-    plt.show()
-                      
-    plt.plot(solo_vel_list, daily_data, '.')
-    plt.xlabel('Radial velocity towards sun (km/s)')
-    plt.ylabel('Amplitude (V)')
-    plt.title('Average max amplitude per day')
-    plt.grid(True, alpha=0.5)
+    plt.axhline(0.5)
     plt.show()
     
-
+def plot_impactRate(data, packetCount):
+    packetLength = 0.062
+    impact_rates = []
+    dates = []
+    for file in data:
+        for day in file:
+            N_tot = packetCount[day]['packetCount']
+            N_dust = len(file[day]['epoch'])
+            print(N_tot)
+            impact_rates.append(N_dust/(N_tot*packetLength))
+            date_str = day.split('_')[3]  # Extract the date string
+            date = datetime.datetime.strptime(date_str, "%Y%m%d").date()
+            dates.append(date)
+    
+    plt.plot(dates, impact_rates, '.')
+    plt.show()
+            
 #Set font sizes
 plt.rc('font', size=28)
 plt.rc('xtick', labelsize=25)
@@ -506,7 +524,7 @@ for filename in os.listdir(directory):
 path = 'C:\Githubs\kandidat\SOLO_orbit\SOLO_orbit_HCI.txt' #Solar orbiter distances
 files = ['Labels_2020_v2.pkl', 'Labels_2021_v2.pkl', 'Labels_2022_2023_v2.pkl'] #, 'Labels_2021.pkl', 'Labels_2022.pkl', 'Labels_2023.pkl'] #files from 'label_data.py'
 data = [pd.read_pickle(year) for year in files]
-
+packetCount = pd.read_pickle('packetCounts')
 #Plots
 fig_path = 'C:/Users/ludwi/OneDrive - Uppsala universitet/1. Projekt/Kandidat/figures/'
 plot_dust_radV(data)
