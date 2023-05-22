@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 from pathlib import Path
 import os
 import datetime
@@ -55,6 +56,16 @@ solo_min_radius = [datetime.datetime(2020, 6, 15, 0, 0), datetime.datetime(2021,
                    datetime.datetime(2021, 9, 9, 0, 0), datetime.datetime(2022, 3, 27, 0, 0), 
                    datetime.datetime(2022, 10, 12, 0, 0)]                                       #the dates of perihelion
 
+
+#Set font sizes
+plt.rc('font', size=28)
+plt.rc('xtick', labelsize=25)
+plt.rc('ytick', labelsize=25)
+# Set the font family to the LaTeX font family
+mpl.rcParams['font.family'] = 'serif'
+mpl.rcParams['font.serif'] = ['Times New Roman'] + mpl.rcParams['font.serif']
+mpl.rcParams['figure.constrained_layout.use'] = True   
+
 # Apply a smoothening filter to smooth the signal
 window_size = 30
 model_smoothed = smooth(impact_model_count, window_size)
@@ -68,13 +79,12 @@ plt.plot(dates, TDS_smoothed, color='red', label = 'TDS smoothed')
 
 plt.vlines(x = solo_min_radius, colors = 'black', linestyle="dashed", ymin = 0, ymax = max(impact_model_count), label = 'Solar orbiter at perihelion')
 
-plt.xlabel('Dates', fontsize = 25)
-plt.xticks(fontsize = 25)
+plt.xlabel('Dates')
 
-plt.ylabel('Impacts [/day]', fontsize = 25)
-plt.title('Predictions of dust impacts', fontsize = 30)
+plt.ylabel('Impacts [/day]')
+plt.title('Predictions of dust impacts')
 
 plt.grid(color='grey', linewidth=0.2)
-plt.legend(fontsize="20")
+plt.legend()
 
 plt.show()

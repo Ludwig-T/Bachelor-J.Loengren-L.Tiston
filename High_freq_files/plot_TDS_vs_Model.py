@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import numpy as np
 from pathlib import Path
 
@@ -61,6 +62,16 @@ for file in os.listdir(path):
 dates = pd.date_range(start=start_month, end=end_month, freq='M')
 months = [timestamp.strftime('%Y-%m') for timestamp in dates]
 
+
+#Set font sizes
+plt.rc('font', size=28)
+plt.rc('xtick', labelsize=25)
+plt.rc('ytick', labelsize=25)
+# Set the font family to the LaTeX font family
+mpl.rcParams['font.family'] = 'serif'
+mpl.rcParams['font.serif'] = ['Times New Roman'] + mpl.rcParams['font.serif']
+mpl.rcParams['figure.constrained_layout.use'] = True   
+
 #plot the figure
 fig, ax = plt.subplots()
 
@@ -72,16 +83,15 @@ TDS_bar = ax.bar(np.arange(len(TDS_m)) - barWidth_small/2 , TDS_m, barWidth_smal
 model_bar = ax.bar(np.arange(len(model_m)) + barWidth_small/2 , model_m, barWidth_small, bottom=agree_m, label='Only Model classification', zorder=3)
 
 ax.set_xticks(np.arange(len(agree_m)))
-ax.set_xticklabels(months, rotation=90, fontsize = 20)
+ax.set_xticklabels(months, rotation=90)
 
 for label in ax.xaxis.get_ticklabels()[::2]:
     label.set_visible(False)
 
-ax.set_ylabel('Mean impacts [/day]', fontsize = 20)
-#ax.set_xlabel('Month', fontsize = 25)
+ax.set_ylabel('Mean impacts [/day]')
 
-ax.legend(fontsize="20")
+ax.legend()
 ax.grid(color = "grey", zorder=0)
 
-plt.title('Agreeance and dissagreence in the models', fontsize = 30)
+plt.title('Agreeance and dissagreence in the models')
 plt.show()
