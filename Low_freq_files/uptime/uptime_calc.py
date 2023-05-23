@@ -11,8 +11,8 @@ spiceypy.furnsh('C:/Data/solo_master/kernels/lsk/naif0012.tls')
 l1_dir = '//NAS24/solo/remote/data/L1'
 l1_pred_dir = 'C:/Githubs/kandidat/Low_freq_files/Neural Network/predictions'
 
-save_as = 'uptime_202112.pkl'   #Change this
-count_of_file = 1               #And this
+save_as = 'uptime_202208.pkl'   #Change this
+count_of_file = 9               #And this
 
 l1_files = []
 
