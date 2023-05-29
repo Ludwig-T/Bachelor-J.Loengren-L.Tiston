@@ -7,7 +7,9 @@ from scipy.signal import savgol_filter
 from numpy.polynomial.polynomial import Polynomial
 import spiceypy
 import os
-
+'''
+File for producing plots and graphs for the statistics
+'''
 def get_radius(date_str_list):
     """
     Takes a list of dates in format 'YYYYMMDD'
@@ -48,6 +50,7 @@ def plot_hist(data):
                 if len(good_wavel) != 0:
                     wavelengths.append(max(good_wavel))
     
+    print(len(wavelengths)/len(amplitudes))
     fig, axs = plt.subplots(1, 2, layout='constrained')                
     axs[0].hist(amplitudes, 20)
     axs[0].set_title('Amplitude distrubition')
@@ -189,7 +192,7 @@ def plot_amp_space_year(data):
     #plt.xlim((0.28, 1.05))
     plt.xlabel('Distance from sun [A.U.]')
     plt.ylabel('Amplitude [V]')
-    plt.title('Average max amplitude per day')
+    plt.title('Average amplitude per day')
     plt.show()
 
 def plot_amp_vel(data):
@@ -217,7 +220,7 @@ def plot_amp_vel(data):
     plt.legend(*sc.legend_elements("sizes", num=4), title='Number of impacts')
     plt.xlabel('Total orbital speed w.r.t. sun [km/s]')
     plt.ylabel('Amplitude [V]')
-    plt.title('Average max amplitude per day')
+    plt.title('Average amplitude per day')
     plt.grid(True, alpha=0.3)
     plt.show()
 
@@ -255,7 +258,7 @@ def plot_amp_dir(data):
     plt.legend()
     plt.xlabel('Total orbital speed [km/s]')
     plt.ylabel('Amplitude [V]')
-    plt.title('Dots are average max amplitude per day')
+    plt.title('Dots are average amplitude per day')
     plt.show()
 
 def plot_amp_radV(data):
@@ -294,8 +297,8 @@ def plot_amp_radV(data):
                     
     sc = plt.scatter(solo_vel_list, daily_data, s=daily_data_size, alpha=0.8)
     plt.xlabel('Radial velocity towards sun (km/s)')
-    plt.ylabel('Amplitude (V)')
-    plt.title('Average max amplitude per day')
+    plt.ylabel('Amplitude [V]')
+    plt.title('Average amplitude per day')
     plt.legend(*sc.legend_elements("sizes", num=4), title='Number of impacts')
     plt.grid(True, alpha=0.5)
     plt.show()
@@ -362,7 +365,7 @@ def plot_ant_day(data):
         plt.plot(ant[1], np.log(savgol_filter(ant[0], 40, 3)), color=color, label=label)
     plt.xlabel('Date')
     plt.ylabel('log(Voltage) [log(V)]')
-    plt.title(f'Average max amplitude per day')
+    plt.title(f'Average amplitude per day')
     plt.legend(title='Savgol filter (n=40)')
     plt.show()
 
@@ -463,12 +466,13 @@ def plot_dust_radV(data):
     x = []
     y = []
     names = []
+    sizes = []
     intervals = np.linspace(0, 20, 11)
     for i in range(len(intervals)-1):
         impacts = [0, 0]
         start = intervals[i]
         end = intervals[i+1]
-        names.append(f'{start:.0f} to {end:.0f}')
+        names.append(f'{start:.0f}-{end:.0f}')
         for v, rate in zip(solo_vel_list, daily_data):
             if start <= v < end:
                 impacts[0] += rate
@@ -476,15 +480,18 @@ def plot_dust_radV(data):
                 impacts[1] += rate
         if sum(impacts) > 0:
             y.append(impacts[0]/sum(impacts))
+            sizes.append(sum(impacts))
     
     v_dust = [1/(2*Y-1)*X for X, Y in zip(x, y)]
-    
-    plt.bar(names, y)
-    plt.plot(x,v_dust)
-    plt.title('Ratio of dust detections going towards sun')
-    plt.xlabel('Threshold radial velocity of Solar Orbiter [km/s]')
-    plt.ylabel('Ratio of dust detections towards sun')
-    plt.axhline(0.5)
+    width = [size/max(sizes) for size in sizes]
+    bars = plt.bar(names, y, width, zorder=3)
+    plt.bar_label(bars, ['n=' + str(size) for size in sizes])
+    plt.title('Ratio of dust detected when traveling towards the sun')
+    plt.xlabel('Absolute radial velocity of Solar Orbiter [km/s]')
+    plt.ylabel('Ratio')
+    plt.axhline(0.5, color='gray', alpha=0.5, zorder=0)
+    plt.grid(True, alpha=0.5, zorder=0)
+    plt.ylim((0, 1))
     plt.show()
     
 def plot_impactRate(data, packetCount):
@@ -528,4 +535,4 @@ data = [pd.read_pickle(year) for year in files]
 packetCount = pd.read_pickle('packetCounts')
 #Plots
 fig_path = 'C:/Users/ludwi/OneDrive - Uppsala universitet/1. Projekt/Kandidat/figures/'
-plot_wave_time(data)
+plot_hist(data)
