@@ -1,5 +1,8 @@
 import numpy as np
 
+"""Extends data
+"""
+
 def extend_data(times, data, adaptable_noise=True):
     '''Extends data with noise'''
     np.random.seed(42)
