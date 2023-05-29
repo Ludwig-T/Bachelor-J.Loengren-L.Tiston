@@ -3,6 +3,9 @@ import os
 from data_handling import get_data, gen_timeseries
 from get_amp import get_amp
 from get_wavelenght import get_wavelenght
+'''
+Generates like waveform and amplitude on data of predicted dust impacts 
+'''
 
 save_as = 'Labels_2020_v2.pkl'
 

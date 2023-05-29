@@ -493,46 +493,13 @@ def plot_dust_radV(data):
     plt.grid(True, alpha=0.5, zorder=0)
     plt.ylim((0, 1))
     plt.show()
-    
-def plot_impactRate(data, packetCount):
-    packetLength = 0.062
-    impact_rates = []
-    dates = []
-    for file in data:
-        for day in file:
-            N_tot = packetCount[day]['packetCount']
-            N_dust = len(file[day]['epoch'])
-            print(N_tot)
-            impact_rates.append(N_dust/(N_tot*packetLength))
-            date_str = day.split('_')[3]  # Extract the date string
-            date = datetime.datetime.strptime(date_str, "%Y%m%d").date()
-            dates.append(date)
-    
-    plt.plot(dates, impact_rates, '.')
-    plt.show()
-            
-#Set font sizes
-plt.rc('font', size=28)
-plt.rc('xtick', labelsize=25)
-plt.rc('ytick', labelsize=25)
-# Set the font family to the LaTeX font family
-mpl.rcParams['font.family'] = 'serif'
-mpl.rcParams['font.serif'] = ['Times New Roman'] + mpl.rcParams['font.serif']
-mpl.rcParams['figure.constrained_layout.use'] = True
-       
-#Load spicepy kernels
-spiceypy.furnsh('C:/Data/solo_master/kernels/lsk/naif0012.tls')
-directory = "C:/Data/solo_master/kernels/spk"
-for filename in os.listdir(directory):
-    if filename.endswith(".bsp"):
-        full_path = os.path.join(directory, filename)
-        spiceypy.furnsh(full_path)
 
 #Read data
 path = 'C:\Githubs\kandidat\SOLO_orbit\SOLO_orbit_HCI.txt' #Solar orbiter distances
-files = ['Labels_2020_v2.pkl', 'Labels_2021_v2.pkl', 'Labels_2022_2023_v2.pkl'] #, 'Labels_2021.pkl', 'Labels_2022.pkl', 'Labels_2023.pkl'] #files from 'label_data.py'
-data = [pd.read_pickle(year) for year in files]
-packetCount = pd.read_pickle('packetCounts')
+path_labels = "C:\Githubs\kandidat\High_freq_files\pickled labels"
+files = ['Labels_2020_v2.pkl', 'Labels_2021_v2.pkl', 'Labels_2022_2023_v2.pkl']
+data = [pd.read_pickle(os.path.join(path_labels, year)) for year in files]
+
 #Plots
 fig_path = 'C:/Users/ludwi/OneDrive - Uppsala universitet/1. Projekt/Kandidat/figures/'
 plot_hist(data)

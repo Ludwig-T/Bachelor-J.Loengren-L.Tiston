@@ -4,8 +4,11 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
 from pathlib import Path
-
 from data_handling import get_data
+
+"""
+Plots differences in TDS and neural network data
+"""
 
 folder_predictions = 'predictions'
 path = Path(__file__).with_name(folder_predictions) 

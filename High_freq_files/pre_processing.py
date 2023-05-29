@@ -3,6 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from data_extension import extend_data
 
+"""
+Function for preprocessing of data for HF model
+"""
+
 def process_data(times, DATA, SAMPLING_RATE=1, compression=4,\
     to_plot=False, adaptable_noise=True, to_print=True, extension='noise'):
     '''Removes bias, filters, compresses and normalizes data. to_print gives error messages.

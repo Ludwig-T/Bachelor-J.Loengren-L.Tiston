@@ -6,6 +6,10 @@ from pre_processing import process_data
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+"""
+Code for showing different data extension options
+"""
+
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 #Set font sizes
 plt.rc('font', size=28)

@@ -2,6 +2,10 @@ import matplotlib.pyplot as plt
 from data_handling import tripple_plot
 import numpy as np
 import scipy.signal as scisig
+
+    """Function for getting amplitude from signal
+    """
+
 def get_amp(X, Y, to_plot=False):
     '''Returns the minimum and maximum amplitud for each antenna, and plots them if needed.
     Input is timedata X, and a list of the three electric field Y.'''

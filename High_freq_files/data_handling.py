@@ -2,6 +2,9 @@ import cdflib
 import matplotlib.pyplot as plt
 import numpy as np
 
+    """Functions for different data handling
+    """
+
 def tripple_plot(X, Y, to_show=True, title="Electric field (V/m)", set_font=True):
     '''Plots 3 graphs on common x-axis'''
     if set_font:

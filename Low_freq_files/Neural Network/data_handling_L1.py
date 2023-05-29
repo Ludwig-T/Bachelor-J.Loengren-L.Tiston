@@ -2,7 +2,9 @@ import cdflib
 import numpy as np
 import scipy.io as sio
 import random
-
+'''
+Functions for LF data handling
+'''
 random.seed(42)
 
 #window = 15360 creates a maximum of 1 minute for the maximum 256 SR
@@ -83,7 +85,7 @@ def extracting_mat(PATH_MAT_FILE):
     return t, data, return_list
 
 
-def sliding_data(data, overlap, window_size = window):
+def sliding_data(data, overlap=0.2, window_size = window):
     
 
     # Calculate the stride

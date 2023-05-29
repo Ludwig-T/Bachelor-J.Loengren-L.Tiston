@@ -3,6 +3,10 @@ import scipy.signal as scisig
 import numpy as np
 import matplotlib.pyplot as plt
 
+'''
+Functions for getting wavelength from signal
+'''
+
 def get_impact_time(times, DATA, reverse=False, \
         THRESH_HIGH=[0.05, 0.05, 0.05], THRESH_LOW=[0.005, 0.005, 0.005]):
     '''Input is timeseries of antennas. Output is each antennas wavelenghts start and end time.

@@ -6,6 +6,10 @@ from datetime import datetime, timedelta
 import spiceypy
 import cdflib
 import pickle
+
+"""Calculates uptime of LF data
+"""
+
 spiceypy.furnsh('C:/Data/solo_master/kernels/lsk/naif0012.tls')
 
 l1_dir = '//NAS24/solo/remote/data/L1'

@@ -5,6 +5,10 @@ from data_handling import get_data, gen_timeseries
 from pre_processing import process_data
 import pandas as pd
 
+"""
+Uses neural network to create classifications for HF data
+"""
+
 #Read Data
 PATH = '//NAS24/solo/remote/data/L2/tds_wf_e'
 YEAR = '2022'

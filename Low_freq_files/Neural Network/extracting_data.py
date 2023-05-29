@@ -1,8 +1,10 @@
 import os
 import pickle
-
 from data_handling_L1 import get_data, extracting_mat, sliding_data, creating_indices, creating_timeseries
 
+'''
+Code for importing data from Matlab into Python and forming training data
+'''
 PATH = '//NAS24/solo/remote/data/L1'
 PATH_FOLDER_MAT_FILES = '//NAS24/solo/data_michiko/dustdata'
 save_as = 'data_files_2s.pkl'
@@ -26,7 +28,7 @@ for root, dirs, files in os.walk(PATH):    #iterate folders
                 E, V, EPOCH  = get_data(CURRENT_PATH) 
 
                 time, data, timestamps_tuple = extracting_mat(PATH_MAT_FILE)
-                start_indices = sliding_data(time)
+                start_indices = sliding_data(time, overlap = 0.5)
 
                 timestamps = [x[1] for x in timestamps_tuple]
 
